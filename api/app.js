@@ -7,8 +7,6 @@ const dynamoose = require("dynamoose");
 
 const ddb = new dynamoose.aws.ddb.DynamoDB({
   region: "ap-southeast-1",
-  //   accessKeyId: "AKIATL7YZBSBUR52CYVO",
-  //   secretAccessKey: "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",
 });
 
 dynamoose.aws.ddb.set(ddb);
