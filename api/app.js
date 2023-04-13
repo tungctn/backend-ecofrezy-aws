@@ -20,4 +20,8 @@ app.use(express.json());
 
 app.use("/api", appRouter);
 
+appRouter.get("/", (req, res) => {
+  res.json({ message: "Hello World" });
+});
+
 module.exports = app;

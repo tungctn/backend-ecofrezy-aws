@@ -7,16 +7,22 @@ const MissionSchema = new dynamoose.Schema(
       hashKey: true,
       default: uuidv4(),
     },
-    title: {
+    name: {
       type: String,
       required: true,
-      min: 2,
-      max: 50,
+    },
+    point: {
+      type: Number,
+      required: true,
+    },
+    category: {
+      type: String,
+      enum: ["health", "environment", "social"],
     },
     description: {
       type: String,
       default: "",
-    },  
+    },
   },
   { timestamps: true }
 );

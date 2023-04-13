@@ -28,7 +28,22 @@ const UserSchema = new dynamoose.Schema(
     },
     friends: {
       type: Array,
-      default: [],
+      schema: [
+        {
+          type: Object,
+          schema: {
+            id: {
+              type: String,
+            },
+            name: {
+              type: String,
+            },
+            picturePath: {
+              type: String,
+            },
+          },
+        },
+      ],
     },
     pickedMission: {
       type: Object,

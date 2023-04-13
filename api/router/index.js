@@ -1,7 +1,13 @@
 const express = require("express");
-const UserRouter = require("./user");
+
+const userRouter = require("./user");
+const missionRouter = require("./mission");
+const postRouter = require("./post");
+
 const appRouter = express.Router();
 
-appRouter.use("/user", UserRouter);
+appRouter.use("/user", userRouter);
+appRouter.use("/mission", missionRouter);
+appRouter.use("/post", postRouter);
 
 module.exports = appRouter;
