@@ -38,14 +38,17 @@ const PostSchema = new dynamoose.Schema({
         type: Array,
         schema: [
           {
-            id: {
-              type: String,
-            },
-            name: {
-              type: String,
-            },
-            picturePath: {
-              type: String,
+            type: Object,
+            schema: {
+              id: {
+                type: String,
+              },
+              name: {
+                type: String,
+              },
+              picturePath: {
+                type: String,
+              },
             },
           },
         ],
@@ -63,17 +66,20 @@ const PostSchema = new dynamoose.Schema({
         type: Array,
         schema: [
           {
-            id: {
-              type: String,
-            },
-            name: {
-              type: String,
-            },
-            picturePath: {
-              type: String,
-            },
-            content: {
-              type: String,
+            type: Object,
+            schema: {
+              id: {
+                type: String,
+              },
+              name: {
+                type: String,
+              },
+              picturePath: {
+                type: String,
+              },
+              content: {
+                type: String,
+              },
             },
           },
         ],

@@ -1,1 +1,1 @@
-const Post = require("../model/Post");
+const Post = require("../models/Post");

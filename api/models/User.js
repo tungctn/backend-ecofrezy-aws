@@ -44,6 +44,7 @@ const UserSchema = new dynamoose.Schema(
           },
         },
       ],
+      default: [],
     },
     pickedMission: {
       type: Object,
@@ -58,6 +59,7 @@ const UserSchema = new dynamoose.Schema(
           type: String,
         },
       },
+      default: {},
     },
     todayMissions: {
       type: Object,
@@ -69,6 +71,7 @@ const UserSchema = new dynamoose.Schema(
           type: Date,
         },
       },
+      default: {},
     },
     missionRequests: {
       type: Array,
@@ -91,6 +94,7 @@ const UserSchema = new dynamoose.Schema(
           },
         },
       ],
+      default: [],
     },
   },
   { timestamps: true }
