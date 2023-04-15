@@ -17,7 +17,7 @@ const MissionSchema = new dynamoose.Schema(
     },
     category: {
       type: String,
-      enum: ["health", "environment", "social"],
+      // enum: [""],
     },
     description: {
       type: String,

@@ -16,8 +16,21 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
+module.exports.updateUser = async (req, res) => {
+  try {
+    const { name, friends } = req.body;
+
+    const user = await User.update(
+      { email: req.user.email },
+      { friends, name }
+    );
+    return res.status(200).json({ user: user });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports.userInfo = async (req, res) => {
   const response = await User.scan("email").eq(req.user.email).exec();
   res.status(200).json({ message: "User info", data: response });
-}; 
-
+};

@@ -14,5 +14,5 @@ userRouter.post(
 
 userRouter.post("/", UserController.createUser);
 userRouter.get("/profile", authMiddleware.verifyToken, UserController.userInfo);
-userRouter.put("/finish", )
+//userRouter.put("/finish", )
 module.exports = userRouter;

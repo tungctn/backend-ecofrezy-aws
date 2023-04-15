@@ -23,6 +23,17 @@ module.exports.getAllPosts = async (req, res) => {
       .where("userId")
       .in([...friendIds, user[0].id])
       .exec();
+    posts = posts.map((post) => {
+      return {
+        title: post.title,
+        name: post.userName,
+        userPicturePath: post.userPicturePath,
+        friendId: post.userId,
+        picturePath: post.picturePath,
+      };
+    });
+    user[0].missionRequests = posts;
+    await user[0].save();
     return res.status(200).json({ posts: posts });
   } catch (error) {
     return res.status(500).json({ error: error.message });

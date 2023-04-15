@@ -1,5 +1,11 @@
-const { S3 } = require("aws-sdk");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const {
+  Upload
+} = require("@aws-sdk/lib-storage");
+const {
+  PutObjectCommand,
+  S3,
+  S3Client
+} = require("@aws-sdk/client-s3");
 const uuid = require("uuid").v4;
 const multer = require("multer");
 
@@ -14,7 +20,10 @@ exports.s3Uploadv2 = async (files) => {
     };
   });
 
-  return await Promise.all(params.map((param) => s3.upload(param).promise()));
+  return await Promise.all(params.map((param) => new Upload({
+    client: s3,
+    params: param
+  }).done()));
 };
 
 exports.s3Uploadv3 = async (file) => {
