@@ -7,83 +7,76 @@ Globals:
     Timeout: 600
 
 Resources:
+  MyUserPoolIdParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: myUserPoolId
+      Type: String
+      Value: !Ref CognitoUserPool
+
+  MyClientIdParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: myClientId
+      Type: String
+      Value: !Ref CognitoUserPoolClient
+  # Tạo Cognito User Pool
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: MyUserPool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: True
+          RequireNumbers: True
+          # RequireSymbols: True
+          # RequireUppercase: True
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: True
+          Mutable: True
+      AutoVerifiedAttributes:
+        - email
+
+  # Tạo Cognito User Pool Client
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: MyUserPoolClient
+      UserPoolId:
+        Ref: CognitoUserPool
+      GenerateSecret: False
+      AllowedOAuthFlows:
+        - implicit
+      AllowedOAuthScopes:
+        - email
+        - openid
+      CallbackURLs:
+        - 'https://example.com/callback'
+      AllowedOAuthFlowsUserPoolClient: True
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
+
+  # Tạo Cognito Identity Pool
+  CognitoIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      IdentityPoolName: MyIdentityPool
+      AllowUnauthenticatedIdentities: False
+      CognitoIdentityProviders:
+        - ClientId:
+            Ref: CognitoUserPoolClient
+          ProviderName:
+            Fn::GetAtt: [CognitoUserPool, ProviderName]
+
+
   # Add S3 Bucket resource
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: ecofrenzy-images
-
-
-  # Add Cognito User Pool resource
-  # CognitoUserPool:
-  #   Type: AWS::Cognito::UserPool
-  #   Properties:
-  #     UserPoolName: EcofrenzyUserPool
-  #     AutoVerifiedAttributes:
-  #       - email
-  #     Policies:
-  #       PasswordPolicy:
-  #         MinimumLength: 8
-  #         RequireLowercase: True
-  #         RequireNumbers: True
-  #         RequireSymbols: True
-  #         RequireUppercase: True
-
-  # # Add Cognito User Pool Client resource
-  # CognitoUserPoolClient:
-  #   Type: AWS::Cognito::UserPoolClient
-  #   Properties:
-  #     ClientName: EcofrenzyUserPoolClient
-  #     GenerateSecret: False
-  #     UserPoolId: !Ref CognitoUserPool
-
-  # # Add Cognito Identity Pool resource
-  # CognitoIdentityPool:
-  #   Type: AWS::Cognito::IdentityPool
-  #   Properties:
-  #     IdentityPoolName: EcofrenzyIdentityPool
-  #     AllowUnauthenticatedIdentities: False
-  #     CognitoIdentityProviders:
-  #       - ClientId: !Ref CognitoUserPoolClient
-  #         ProviderName: !Sub 'cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}'
-
-  # # Add Cognito Identity Pool Roles resource
-  # CognitoIdentityPoolRoles:
-  #   Type: AWS::Cognito::IdentityPoolRoleAttachment
-  #   Properties:
-  #     IdentityPoolId: !Ref CognitoIdentityPool
-  #     Roles:
-  #       authenticated: !GetAtt CognitoAuthenticatedRole.Arn
-
-  # # Add Cognito Authenticated Role resource
-  # CognitoAuthenticatedRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Federated: 'cognito-identity.amazonaws.com'
-  #           Action:
-  #             - 'sts:AssumeRoleWithWebIdentity'
-  #           Condition:
-  #             StringEquals:
-  #               'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
-  #             'ForAnyValue:StringLike':
-  #               'cognito-identity.amazonaws.com:amr': authenticated
-  #     Policies:
-  #       - PolicyName: CognitoAuthenticatedPolicy
-  #         PolicyDocument:
-  #           Version: '2012-10-17'
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - 'mobileanalytics:PutEvents'
-  #                 - 'cognito-sync:*'
-  #                 - 'cognito-identity:*'
-  #               Resource: '*'
-
+      BucketName: ecofrenzy-img
 
   ExpressApi:
     Type: AWS::Serverless::Api
@@ -99,6 +92,10 @@ Resources:
       Runtime: nodejs18.x
       MemorySize: 512
       Role: !GetAtt ExpressFunctionRole.Arn
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref CognitoUserPool
+          CLIENT_ID: !Ref CognitoUserPoolClient
       Events:
         ExpressFunctionProxy:
           Type: Api
@@ -154,13 +151,13 @@ Resources:
                   - s3:DeleteObject
                   - s3:ListBucket
                 Resource:
-                  - !Sub "arn:aws:s3:::${S3Bucket}"
-                  - !Sub "arn:aws:s3:::${S3Bucket}/*"
+                  - !GetAtt S3Bucket.Arn
+                  - !Sub "${S3Bucket.Arn}/*"
               - Effect: Allow
                 Action:
                   - s3:PutObjectAcl
                 Resource:
-                  - !Sub "arn:aws:s3:::${S3Bucket}/*"
+                  - !Sub "${S3Bucket.Arn}/*"
 
         - PolicyName: LambdaLogsPolicy
           PolicyDocument:
@@ -172,6 +169,22 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: ExpressFunctionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource:
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/myUserPoolId'
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/myClientId'
 
 Outputs:
 
@@ -188,16 +201,17 @@ Outputs:
   S3BucketOutput:
     Description: "S3 Bucket for storing files"
     Value: !Ref S3Bucket
-  # Add Cognito User Pool output
-  # CognitoUserPoolOutput:
-  #   Description: "Cognito User Pool ID"
-  #   Value: !Ref CognitoUserPoo
-  # CognitoUserPoolClientOutput:
-  #   Description: "Cognito User Pool Client ID"
-  #   Value: !Ref CognitoUserPoolClient
-  # CognitoIdentityPoolOutput:
-  #   Description: "Cognito Identity Pool ID"
-  #   Value: !Ref CognitoIdentityPool
-  # CognitoAuthenticatedRoleOutput:
-  #   Description: "Cognito Authenticated Role ARN"
-  #   Value: !GetAtt CognitoAuthenticatedRole.Arn
+  UserPoolId:
+    Description: User Pool ID
+    Value:
+      Ref: CognitoUserPool
+
+  UserPoolClientId:
+    Description: User Pool Client ID
+    Value:
+      Ref: CognitoUserPoolClient
+
+  IdentityPoolId:
+    Description: Identity Pool ID
+    Value:
+      Ref: CognitoIdentityPool

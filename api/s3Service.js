@@ -21,8 +21,8 @@ exports.s3Uploadv3 = async (file) => {
   const s3client = new S3Client();
 
   const param = {
-    Bucket: "ecofrenzy-images",
-    Key: `user/${uuid()}-${file.originalname}`,
+    Bucket: "ecofrenzy-img",
+    Key: `ecofrenzy/${uuid()}-${file.originalname}`,
     Body: file.buffer,
     ACL: "public-read",
     ContentType: file.mimetype,

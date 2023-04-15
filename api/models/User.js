@@ -17,11 +17,16 @@ const UserSchema = new dynamoose.Schema(
       required: true,
       default: "",
     },
-    password: {
-      type: String,
-      required: true,
-      default: "",
+    role: {
+      type: Number,
+      enum: [1, 2],
+      default: 2,
     },
+    // password: {
+    //   type: String,
+    //   required: true,
+    //   default: "",
+    // },
     picturePath: {
       type: String,
       default: "",

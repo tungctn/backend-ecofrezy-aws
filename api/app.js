@@ -5,7 +5,6 @@ const cors = require("cors");
 const appRouter = require("./router/index.js");
 const dynamoose = require("dynamoose");
 const multer = require("multer");
-const { s3Uploadv2, s3Uploadv3 } = require("./s3Service");
 
 const ddb = new dynamoose.aws.ddb.DynamoDB({
   region: "ap-southeast-1",
@@ -24,47 +23,6 @@ appRouter.get("/", (req, res) => {
   res.json({ message: "Hello World" });
 });
 
-// const storage = multer.memoryStorage();
-
-// const fileFilter = (req, file, cb) => {
-//   if (file.mimetype.split("/")[0] === "image") {
-//     cb(null, true);
-//   } else {
-//     cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE"), false);
-//   }
-// };
-
-// // ["image", "jpeg"]
-
-// const upload = multer({
-//   storage,
-//   fileFilter,
-//   limits: { fileSize: 1000000000, files: 2 },
-// });
-
-// appRouter.post("/upload", upload.single("file"), async (req, res) => {
-//   try {
-//     const result = await s3Uploadv3(req.file);
-//     console.log(result);
-//     return res
-//       .status(200)
-//       .json({ status: "success", result: result, url: result.Location });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
-// app.post("/upload", upload.single("file"), async (req, res) => {
-//   try {
-//     const result = await s3Uploadv3(req.file);
-//     console.log(result);
-//     return res
-//       .status(200)
-//       .json({ status: "success", result: result, url: result.Location });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
 
 app.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {

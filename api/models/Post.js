@@ -27,6 +27,10 @@ const PostSchema = new dynamoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: String,
+    required: true,
+  },
   likes: {
     type: Object,
     schema: {

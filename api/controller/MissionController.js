@@ -1,28 +1,35 @@
 const Mission = require("../models/Mission");
+const User = require("../models/User");
 
 module.exports.createMission = async (req, res) => {
   try {
-    // const { id, name, email } = req.body;
     await Mission.create({ ...req.body }, (err, mission) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
       return res.status(200).json({ mission: mission });
     });
-    // return res.status(200).json({ ...req.body });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
-module.exports.getAllMissions = async (req, res) => {
+module.exports.getAllMissionsToday = async (req, res) => {
   try {
-    await Mission.scan().exec((err, missions) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
+    const user = await User.scan("email").eq(req.user.email).exec();
+    if (user[0].todayMissions.missions === 0) {
+      const missions = await Mission.scan().exec();
+      const randomMissions = [];
+      while (randomMissions.length < 3) {
+        const randomMission =
+          missions[Math.floor(Math.random() * missions.length)];
+        if (!randomMissions.includes(randomMission)) {
+          randomMissions.push(randomMission);
+        }
       }
-      return res.status(200).json({ missions: missions });
-    });
+      user[0].todayMissions.missions = randomMissions;
+      await user[0].save();
+    }
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
