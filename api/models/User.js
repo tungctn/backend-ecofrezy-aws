@@ -128,6 +128,10 @@ const UserSchema = new dynamoose.Schema(
       ],
       default: [],
     },
+    score: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true }
 );
