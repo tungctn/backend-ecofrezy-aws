@@ -402,7 +402,7 @@ Resources:
               # Service:
               #   - lambda.amazonaws.com
               AWS:
-                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
+                - "arn:aws:iam::050199153033:user/tung.thanh"
             Action:
               - sts:AssumeRole
       Policies:
