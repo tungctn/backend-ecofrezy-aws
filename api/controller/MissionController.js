@@ -46,6 +46,8 @@ module.exports.getAllMissionsToday = async (req, res) => {
           name: mission.name,
           description: mission.description,
           category: mission.category,
+          point: mission.point,
+          isDone: false,
         };
       });
       const randomMissions = [];
@@ -62,7 +64,7 @@ module.exports.getAllMissionsToday = async (req, res) => {
       );
       return res.status(200).json({ missions: randomMissions });
     } else {
-      return res.status(200).json({ user: user[0] });
+      return res.status(200).json({ missions: user[0].todayMissions.missions });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -71,7 +73,7 @@ module.exports.getAllMissionsToday = async (req, res) => {
 
 module.exports.pickMission = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const user = await User.scan("email").eq(req.user.email).exec();
     let mission = await Mission.get(id);
     if (user[0].pickedMission?.isDone) {
@@ -81,8 +83,7 @@ module.exports.pickMission = async (req, res) => {
         description: mission.description,
         isDone: false,
       };
-      user[0].pickedMission = mission;
-      await user[0].save();
+      await User.update({ id: user[0].id }, { pickedMission: mission });
       return res.status(200).json({ mission: mission });
     } else {
       return res
@@ -97,56 +98,19 @@ module.exports.pickMission = async (req, res) => {
 module.exports.completeMission = async (req, res) => {
   try {
     const user = await User.scan("email").eq(req.user.email).exec();
-    user[0].pickedMission.isDone = true;
-    user[0].todayMissions.missions.forEach((mission) => {
-      if (mission.id === user[0].pickedMission.id) {
+    await User.update({ id: user[0].id }, { pickedMission: {} });
+    const user1 = await User.scan("email").eq(req.user.email).exec();
+    user1[0].todayMissions.missions.forEach((mission) => {
+      if (mission.id === user1[0].pickedMission.id) {
         mission.isDone = true;
       }
     });
-    await user[0].save();
+    await User.update(
+      { id: user1[0].id },
+      { todayMissions: user1[0].todayMissions }
+    );
+    res.status(200).json({ user: user1[0] });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
-
-// module.exports.getMissionById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     await Mission.get(id, (err, mission) => {
-//       if (err) {
-//         return res.status(500).json({ error: err.message });
-//       }
-//       return res.status(200).json({ mission: mission });
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
-
-// module.exports.updateMissionById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     await Mission.update(id, { ...req.body }, (err, mission) => {
-//       if (err) {
-//         return res.status(500).json({ error: err.message });
-//       }
-//       return res.status(200).json({ mission: mission });
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
-
-// module.exports.deleteMissionById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     await Mission.delete(id, (err, mission) => {
-//       if (err) {
-//         return res.status(500).json({ error: err.message });
-//       }
-//       return res.status(200).json({ mission: mission });
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };

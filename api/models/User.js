@@ -91,6 +91,9 @@ const UserSchema = new dynamoose.Schema(
                 description: {
                   type: String,
                 },
+                point: {
+                  type: Number,
+                },
                 isDone: {
                   type: Boolean,
                   default: false,
@@ -136,7 +139,7 @@ const UserSchema = new dynamoose.Schema(
     score: {
       type: Number,
       default: 0,
-    }
+    },
   },
   { timestamps: true }
 );

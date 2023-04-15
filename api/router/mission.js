@@ -13,8 +13,8 @@ missionRouter.get(
   authMiddleware.verifyToken,
   MissionController.getAllMissionsToday
 );
-missionRouter.get(
-  "/pick/:id",
+missionRouter.post(
+  "/pick",
   authMiddleware.verifyToken,
   MissionController.pickMission
 );
