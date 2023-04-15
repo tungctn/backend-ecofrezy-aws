@@ -121,6 +121,8 @@ Resources:
             Principal:
               Service:
                 - lambda.amazonaws.com
+              AWS:
+                - 'arn:aws:iam::***:user/tung.thanh'
             Action:
               - sts:AssumeRole
       Policies:
@@ -189,6 +191,15 @@ Resources:
                 Resource:
                   - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/myUserPoolId'
                   - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/myClientId'
+
+        - PolicyName: 'AssumeRolePolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'sts:AssumeRole'
+                Resource: 'arn:aws:iam::***:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-5NGE0VCQR5OO'
 
 Outputs:
 
