@@ -78,7 +78,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
       CidrBlock: !Ref PublicSubnet2CIDR
       MapPublicIpOnLaunch: true
       Tags:
@@ -100,7 +100,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
       CidrBlock: !Ref PrivateSubnet2CIDR
       MapPublicIpOnLaunch: false
       Tags:
@@ -210,6 +210,29 @@ Resources:
       VpcId: !Ref VPC
   # End VPC 
   
+  # Start Subnet
+  SubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: 10.192.13.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: SubnetA
+  SubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: 10.192.14.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: SubnetB
+  # End Subnet
+
   # Start Redis
   ElasticacheCluster:
     Type: 'AWS::ElastiCache::CacheCluster'
@@ -230,8 +253,8 @@ Resources:
     Properties:
       Description: Subnet group for Elasticache
       SubnetIds:
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
+        - !Ref SubnetA
+        - !Ref SubnetB
   SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -478,6 +501,15 @@ Outputs:
     Value: !Ref NoIngressSecurityGroup 
   # End outputs VPC
   
+  # Start outputs Subnet
+  SubnetA:
+    Description: A reference to the public subnet in the 2nd Availability Zone
+    Value: !Ref SubnetA
+  SubnetB:
+    Description: A reference to the public subnet in the 2nd Availability Zone
+    Value: !Ref SubnetB
+  # End outputs Subnet
+
   # Start ouputs Redis
   ElasticacheEndpoint:
     Value: !GetAtt ElasticacheCluster.RedisEndpoint.Address
