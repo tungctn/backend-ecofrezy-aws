@@ -10,8 +10,8 @@ on:
       - 'feature**'
 
 env:
-  PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AKIAQXMA2JGEYGJT6L7T }}
-  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.YzvWDLTOyXEXxZN4Tnyu/FsyJBSq+pKtVpp/EDzP }}
+  PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_SECRET_KEY_ID }}
+  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   SAM_TEMPLATE: /template.yaml
   TESTING_STACK_NAME: backend-ecofrenzy
   TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::050199153033:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-5NGE0VCQR5OO
