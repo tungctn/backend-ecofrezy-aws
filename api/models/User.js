@@ -63,6 +63,10 @@ const UserSchema = new dynamoose.Schema(
         description: {
           type: String,
         },
+        isDone: {
+          type: Boolean,
+          default: false,
+        },
       },
       default: {},
     },
@@ -71,6 +75,29 @@ const UserSchema = new dynamoose.Schema(
       schema: {
         missions: {
           type: Array,
+          schema: [
+            {
+              type: Object,
+              schema: {
+                id: {
+                  type: String,
+                },
+                name: {
+                  type: String,
+                },
+                category: {
+                  type: String,
+                },
+                description: {
+                  type: String,
+                },
+                isDone: {
+                  type: Boolean,
+                  default: false,
+                },
+              },
+            },
+          ],
         },
         updatedTime: {
           type: Date,

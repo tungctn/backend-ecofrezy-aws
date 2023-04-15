@@ -13,5 +13,15 @@ missionRouter.get(
   authMiddleware.verifyToken,
   MissionController.getAllMissionsToday
 );
+missionRouter.get(
+  "/pick/:id",
+  authMiddleware.verifyToken,
+  MissionController.pickMission
+);
+missionRouter.get(
+  "/completed",
+  authMiddleware.verifyToken,
+  MissionController.completeMission
+);
 
 module.exports = missionRouter;

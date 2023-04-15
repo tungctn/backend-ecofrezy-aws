@@ -18,7 +18,15 @@ module.exports.getAllMissionsToday = async (req, res) => {
   try {
     const user = await User.scan("email").eq(req.user.email).exec();
     if (user[0].todayMissions.missions === 0) {
-      const missions = await Mission.scan().exec();
+      let missions = await Mission.scan().exec();
+      missions = missions.map((mission) => {
+        return {
+          id: mission.id,
+          name: mission.name,
+          description: mission.description,
+          category: mission.category,
+        };
+      });
       const randomMissions = [];
       while (randomMissions.length < 3) {
         const randomMission =
@@ -30,6 +38,46 @@ module.exports.getAllMissionsToday = async (req, res) => {
       user[0].todayMissions.missions = randomMissions;
       await user[0].save();
     }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports.pickMission = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.scan("email").eq(req.user.email).exec();
+    let mission = await Mission.get(id);
+    if (user[0].pickedMission?.isDone) {
+      mission = {
+        id: mission.id,
+        title: mission.name,
+        description: mission.description,
+        isDone: false,
+      };
+      user[0].pickedMission = mission;
+      await user[0].save();
+      return res.status(200).json({ mission: mission });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You don't complete the mission" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports.completeMission = async (req, res) => {
+  try {
+    const user = await User.scan("email").eq(req.user.email).exec();
+    user[0].pickedMission.isDone = true;
+    user[0].todayMissions.missions.forEach((mission) => {
+      if (mission.id === user[0].pickedMission.id) {
+        mission.isDone = true;
+      }
+    });
+    await user[0].save();
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

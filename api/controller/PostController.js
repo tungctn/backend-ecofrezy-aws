@@ -19,7 +19,7 @@ module.exports.getAllPosts = async (req, res) => {
     const user = await User.scan("email").eq(req.user.email).exec();
     const friends = user[0]?.friends;
     const friendIds = friends.map((friend) => friend.id);
-    const posts = await Post.scan()
+    let posts = await Post.scan()
       .where("userId")
       .in([...friendIds, user[0].id])
       .exec();
