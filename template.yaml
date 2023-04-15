@@ -391,6 +391,7 @@ Resources:
             Path: "/api/"
             Method: ANY
 
+
   ExpressFunctionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -399,10 +400,8 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              # Service:
-              #   - lambda.amazonaws.com
-              AWS:
-                - "arn:aws:iam::050199153033:user/tung.thanh"
+              Service:
+                - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
       Policies:

@@ -98,6 +98,7 @@ const UserSchema = new dynamoose.Schema(
               },
             },
           ],
+          // default: [],
         },
         updatedTime: {
           type: Date,

@@ -38,7 +38,7 @@ module.exports.createMission = async (req, res) => {
 module.exports.getAllMissionsToday = async (req, res) => {
   try {
     const user = await User.scan("email").eq(req.user.email).exec();
-    if (user[0].todayMissions.missions === 0) {
+    if (user[0].todayMissions.missions.length === 0) {
       let missions = await Mission.scan().exec();
       missions = missions.map((mission) => {
         return {
@@ -56,8 +56,13 @@ module.exports.getAllMissionsToday = async (req, res) => {
           randomMissions.push(randomMission);
         }
       }
-      user[0].todayMissions.missions = randomMissions;
-      await user[0].save();
+      User.update(
+        { id: user[0].id },
+        { todayMissions: { missions: randomMissions } }
+      );
+      return res.status(200).json({ missions: randomMissions });
+    } else {
+      return res.status(200).json({ user: user[0] });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });

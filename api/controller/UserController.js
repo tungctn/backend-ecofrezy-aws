@@ -22,7 +22,8 @@ module.exports.updateUser = async (req, res) => {
 
     const user = await User.update(
       { email: req.user.email },
-      { friends, name }
+      { friends: friends },
+      { name: name }
     );
     return res.status(200).json({ user: user });
   } catch (error) {
