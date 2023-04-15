@@ -24,4 +24,6 @@ sam build && sam deploy
 
 Run on local: 
 
+```
 npm start
+```
