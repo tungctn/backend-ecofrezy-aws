@@ -20,6 +20,7 @@ Resources:
       Name: myClientId
       Type: String
       Value: !Ref CognitoUserPoolClient
+  
   # Tạo Cognito User Pool
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -123,7 +124,7 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-      
+
         # Add DynamoDB access policy
         - PolicyName: LambdaDynamoDBPolicy
           PolicyDocument:
