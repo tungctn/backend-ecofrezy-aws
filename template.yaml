@@ -123,6 +123,7 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
+      
         # Add DynamoDB access policy
         - PolicyName: LambdaDynamoDBPolicy
           PolicyDocument:
@@ -139,6 +140,7 @@ Resources:
                   - dynamodb:Scan
                   - dynamodb:Query
                 Resource: "*"
+        
         # Add S3 access policy
         - PolicyName: LambdaS3Policy
           PolicyDocument:
@@ -169,6 +171,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
+        
         - PolicyName: ExpressFunctionPolicy
           PolicyDocument:
             Version: '2012-10-17'

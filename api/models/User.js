@@ -114,6 +114,7 @@ const UserSchema = new dynamoose.Schema(
             title: {
               type: String,
             },
+            // username
             name: {
               type: String,
             },
@@ -121,6 +122,9 @@ const UserSchema = new dynamoose.Schema(
               type: String,
             },
             friendId: {
+              type: String,
+            },
+            userPicturePath: {
               type: String,
             },
           },

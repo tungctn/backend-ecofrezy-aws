@@ -83,44 +83,46 @@ module.exports.completeMission = async (req, res) => {
   }
 };
 
-module.exports.getMissionById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Mission.get(id, (err, mission) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      return res.status(200).json({ mission: mission });
-    });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
 
-module.exports.updateMissionById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Mission.update(id, { ...req.body }, (err, mission) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      return res.status(200).json({ mission: mission });
-    });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
 
-module.exports.deleteMissionById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Mission.delete(id, (err, mission) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      return res.status(200).json({ mission: mission });
-    });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
+// module.exports.getMissionById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     await Mission.get(id, (err, mission) => {
+//       if (err) {
+//         return res.status(500).json({ error: err.message });
+//       }
+//       return res.status(200).json({ mission: mission });
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
+// module.exports.updateMissionById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     await Mission.update(id, { ...req.body }, (err, mission) => {
+//       if (err) {
+//         return res.status(500).json({ error: err.message });
+//       }
+//       return res.status(200).json({ mission: mission });
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
+// module.exports.deleteMissionById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     await Mission.delete(id, (err, mission) => {
+//       if (err) {
+//         return res.status(500).json({ error: err.message });
+//       }
+//       return res.status(200).json({ mission: mission });
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
