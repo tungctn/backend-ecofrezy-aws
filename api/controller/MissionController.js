@@ -3,12 +3,33 @@ const User = require("../models/User");
 
 module.exports.createMission = async (req, res) => {
   try {
-    await Mission.create({ ...req.body }, (err, mission) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
+    const { name, description, category, point } = req.body;
+    let categoryName;
+    if (category === 1) {
+      categoryName = "Energy and Resources";
+    } else if (category === 2) {
+      categoryName = "FTransportation";
+    } else if (category === 3) {
+      categoryName = "Consumption";
+    } else if (category === 4) {
+      categoryName = "Waste management";
+    } else {
+      categoryName = "Awareness and Innovation";
+    }
+    await Mission.create(
+      {
+        name: name,
+        description: description,
+        point: point,
+        category: categoryName,
+      },
+      (err, mission) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        return res.status(200).json({ mission: mission });
       }
-      return res.status(200).json({ mission: mission });
-    });
+    );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -82,8 +103,6 @@ module.exports.completeMission = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
-
 
 // module.exports.getMissionById = async (req, res) => {
 //   try {
