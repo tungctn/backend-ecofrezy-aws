@@ -11,5 +11,4 @@ appRouter.use("/user", userRouter);
 appRouter.use("/mission", missionRouter);
 appRouter.use("/post", postRouter);
 appRouter.use("/auth", authRouter);
-
 module.exports = appRouter;
