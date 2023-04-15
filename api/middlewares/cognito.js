@@ -1,4 +1,7 @@
-const AWS = require("aws-sdk");
+const AWS = require("aws-sdk"),
+      {
+        CognitoIdentityProvider: CognitoIdentityServiceProvider
+      } = require("@aws-sdk/client-cognito-identity-provider");
 const User = require("../models/User");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -7,7 +10,7 @@ AWS.config.update({
   region: "ap-southeast-1",
 });
 
-const cognito = new AWS.CognitoIdentityServiceProvider({
+const cognito = new CognitoIdentityServiceProvider({
   apiVersion: "2016-04-18",
 });
 
