@@ -14,6 +14,7 @@ Our challenges are designed to be both green and fun, encouraging users to engag
 - **Community**: Join a community of like-minded individuals passionate about the environment, share completed challenges, and get inspired by the creative eco-friendly actions of others.
 
 ## Cloud infrastructure
+![image](https://user-images.githubusercontent.com/78474449/233354664-df16366e-da83-40a1-85cf-35355b409170.png)
 
 The EcoFrenzy app is built on top of AWS infrastructure. Our backend is mostly powered by serverless applications such as AWS Lambda, DynamoDB, API Gateway, which provide us with cost-effective and scalable cloud computing capabilities.
 
